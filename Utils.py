@@ -1,3 +1,5 @@
+import os
+
 from flask import request
 import datetime
 from email.message import EmailMessage
@@ -5,6 +7,8 @@ import smtplib
 import jwt
 from functools import wraps
 from flask import jsonify
+from dotenv import load_dotenv
+load_dotenv()
 
 
 token_dict = {}
@@ -38,8 +42,8 @@ def get_token(UserName):
 
 
 def activate_mail(Email, token_url, Name):
-    EMAIL_ADDRESS = 'nishantsharma17121998@gmail.com'
-    EMAIL_PASS = 'nishant5504'
+    EMAIL_ADDRESS = os.environ.get('EMAIL_ADDRESS')
+    EMAIL_PASS = os.environ.get('EMAIL_PASS')
 
     msg = EmailMessage()
     msg['Subject'] = 'Activate Account'

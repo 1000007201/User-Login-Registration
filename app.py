@@ -6,6 +6,7 @@ import Utils
 from model import Users
 
 
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'thisisasecretkey'
 api = Api(app)
