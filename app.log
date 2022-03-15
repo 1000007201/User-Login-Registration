@@ -1,0 +1,11 @@
+2022-03-15 23:35:32,651 - werkzeug - INFO -  * Restarting with stat
+2022-03-15 23:35:33,412 - werkzeug - WARNING -  * Debugger is active!
+2022-03-15 23:35:33,412 - werkzeug - INFO -  * Debugger PIN: 374-786-449
+2022-03-15 23:35:33,526 - werkzeug - INFO -  * Running on http://127.0.0.1:90/ (Press CTRL+C to quit)
+2022-03-15 23:35:50,762 - werkzeug - INFO - 127.0.0.1 - - [15/Mar/2022 23:35:50] "[31m[1mPOST /Register HTTP/1.1[0m" 409 -
+2022-03-15 23:36:02,727 - root - INFO - Nishant is logged out
+2022-03-15 23:36:02,729 - werkzeug - INFO - 127.0.0.1 - - [15/Mar/2022 23:36:02] "GET /logout HTTP/1.1" 200 -
+2022-03-15 23:36:06,169 - root - INFO - User: nishant_ logged in
+2022-03-15 23:36:06,171 - werkzeug - INFO - 127.0.0.1 - - [15/Mar/2022 23:36:06] "POST /login HTTP/1.1" 200 -
+2022-03-15 23:36:10,086 - root - INFO - User: nishant_ has accessed home page
+2022-03-15 23:36:10,088 - werkzeug - INFO - 127.0.0.1 - - [15/Mar/2022 23:36:10] "GET / HTTP/1.1" 200 -

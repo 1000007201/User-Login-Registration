@@ -1,5 +1,4 @@
 import os
-
 from flask import request
 import datetime
 from email.message import EmailMessage
@@ -10,12 +9,12 @@ from flask import jsonify
 from dotenv import load_dotenv
 load_dotenv()
 
-
 token_dict = {}
 
 
 def token_required(f):
     import app
+
     @wraps(f)
     def decorated(*args, **kwargs):
         if 'access-token' in request.headers:
@@ -30,7 +29,7 @@ def token_required(f):
         except:
             return jsonify(message='Token is invalid')
 
-        return f(data['User'], *args, **kwargs)
+        return f(data['User'])
     return decorated
 
 

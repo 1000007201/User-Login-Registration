@@ -1,15 +1,15 @@
-from flask import Flask, jsonify, make_response, request, session
+from flask import Flask, jsonify, request, make_response
 from flask_mongoengine import MongoEngine
-from flask_restful import Api
-from routes import Registration, Logout, Login, ChangePass, ForgetPass
-import Utils
+from flask_restful import Api, Resource
+from routes import ForgetPass, ChangePass, Login, Registration, Logout, logger
 from model import Users
-
+from Utils import token_required
 
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'thisisasecretkey'
 api = Api(app)
+
 
 # connecting with database
 app.config['MONGODB_SETTINGS'] = {
@@ -21,41 +21,50 @@ db = MongoEngine(app)
 # -----------------------------------------------API-----------------------------------------
 
 
-@app.route('/', methods=['GET'])
-@Utils.token_required
-def home(user_name):
-    data = Users.objects(UserName=user_name).first()
-    return jsonify(message=f'Hello {data.Name}',UserName=f'{data.UserName}', Email=f'{data.Email}')
+class Home(Resource):
+    @token_required
+    def get(user_name):
+        data = Users.objects(UserName=user_name).first()
+        logger.info(f'User: {user_name} has accessed home page')
+        return jsonify(message=f'Hello {data.Name}', UserName=f'{data.UserName}', Email=f'{data.Email}')
 
 
-@app.route('/activate', methods=['GET'])
-@Utils.token_required
-def activate(user_name):
-    data = Users.objects(UserName=user_name).first()
-    data.update(Is_active=True)
+class Activate(Resource):
+    @token_required
+    def get(user_name):
+        data = Users.objects(UserName=user_name).first()
+        data.update(Is_active=True)
+        logger.info(f'User: {user_name} activated his account')
 
-    return make_response(jsonify(message="Your Account is Active.Now you can login"), 200)
+        return make_response(jsonify(message="Your Account is Active.Now you can login"), 200)
 
 
-@app.route('/setpass', methods=['POST'])
-@Utils.token_required
-def set_pass(user_name):
-    data = Users.objects(UserName=user_name).first()
-    password1 = request.form.get('New Password')
-    password2 = request.form.get('Re-Enter Password')
-    if password1 == password2:
-        data.update(Password=password1)
-        return make_response(jsonify(message='Your Password is Set Now you can Login'))
-    return make_response(jsonify(message='You have to Re-Enter Same Password'))
+class SetPass(Resource):
+    @token_required
+    def post(user_name):
+        data = Users.objects(UserName=user_name).first()
+        try:
+            password1 = request.form.get('New Password')
+            password2 = request.form.get('Re-Enter Password')
+        except:
+            return make_response(jsonify(message='Password1 and Password2 can not be empty'))
+        if password1 == password2:
+            data.update(Password=password1)
+            logger.info(f'User: {user_name} has updated his password by forgot password')
+            return make_response(jsonify(message='Your Password is Set Now you can Login'))
+        return make_response(jsonify(message='New Password and Re-Enter Password must be same'))
 
 
 # -------------------EndPoints---------------------------------
+
 api.add_resource(Registration, '/Register')
 api.add_resource(Login, '/login')
 api.add_resource(Logout, '/logout')
-# api.add_resource(Home, '/home/<username>')
+api.add_resource(Home, '/')
 api.add_resource(ChangePass, '/changepass')
 api.add_resource(ForgetPass, '/forgetpass')
+api.add_resource(Activate, '/activate')
+api.add_resource(SetPass, '/setpass')
 
 
 if __name__ == "__main__":
